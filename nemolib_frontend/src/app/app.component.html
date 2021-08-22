@@ -1,0 +1,204 @@
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <h2 id="mainTitle">NEMO</h2>
+    </div>
+    <div class="row justify-content-center">
+        <h4 id="subTitle">A motif detection program</h4>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="jumbotron">
+        <form>
+            <mat-card>
+                <form [formGroup]="formDoc" novalidate>
+                    <mat-form-field class="input-one">
+                        <ngx-mat-file-input formControlName="reFile" placeholder="Required input"
+                                            valuePlaceholder="No file selected" required></ngx-mat-file-input>
+                        <mat-icon matSuffix>folder</mat-icon>
+                        <mat-error *ngIf="formDoc.get('reFile')?.hasError('required')"> Please select a file</mat-error>
+                        <mat-error *ngIf="formDoc.get('reFile')?.hasError('maxContentSize')">
+                            The total size must not
+                            exceed {{ formDoc.get('reFile')?.getError('maxContentSize').maxSize | byteFormat }}
+                            ({{ formDoc.get('reFile')?.getError('maxContentSize').actualSize | byteFormat }}).
+                        </mat-error>
+                    </mat-form-field>
+                </form>
+
+                <mat-radio-group name="graphtype" [(ngModel)]="graphType">
+                    <mat-radio-button value="0">Undirected Graph</mat-radio-button>
+                    <mat-radio-button value="1">Directed Graph</mat-radio-button>
+                </mat-radio-group>
+            </mat-card>
+
+            <br/>
+
+            <mat-card>
+                <mat-form-field class="input-one">
+                    <input matInput name="motifSize" type="number" placeholder="Motif Size"
+                           [formControl]="mSControl" [errorStateMatcher]="matcher">
+                    <mat-hint>Please enter number 3 - 8</mat-hint>
+                    <mat-error
+                            *ngIf="(mSControl.hasError('min') || mSControl.hasError('max')) && !mSControl.hasError('required')">
+                        Please enter a valid motif size
+                    </mat-error>
+                    <mat-error *ngIf="mSControl.hasError('required')">
+                        The motif size is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-radio-group class="otherSel" name="probsel" [(ngModel)]="probSel">
+                    <mat-radio-button value="1">Full Enumeration</mat-radio-button>
+                    <mat-radio-button value="2">Sampling Probabilities</mat-radio-button>
+                </mat-radio-group>
+
+                <div class="row">
+                    <div class="col-md-2 mb-3">
+                        <input name="prob0" type="number" [(ngModel)]="prob[0]" class="form-control" placeholder="0.5"
+                               min="0.1" max="1" step="0.1" [disabled]="probSel != '2'">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <input name="prob1" type="number" [(ngModel)]="prob[1]" class="form-control" placeholder="0.5"
+                               min="0.1" max="1" step="0.1" [disabled]="probSel != '2'">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <input name="prob2" type="number" [(ngModel)]="prob[2]" class="form-control" placeholder="0.5"
+                               min="0.1" max="1" step="0.1" [disabled]="probSel != '2'">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <input name="prob3" type="number" [(ngModel)]="prob[3]" class="form-control"
+                               [disabled]="mSControl.value < 4 || probSel != '2'" placeholder="0.5" min="0.1" max="1"
+                               step="0.1">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <input name="prob4" type="number" [(ngModel)]="prob[4]" class="form-control"
+                               [disabled]="mSControl.value < 5 || probSel != '2'" placeholder="0.5" min="0.1" max="1"
+                               step="0.1">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <input name="prob5" type="number" [(ngModel)]="prob[5]" class="form-control"
+                               [disabled]="mSControl.value < 6 || probSel != '2'" placeholder="0.5" min="0.1" max="1"
+                               step="0.1">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <input name="prob6" type="number" [(ngModel)]="prob[6]" class="form-control"
+                               [disabled]="mSControl.value < 7 || probSel != '2'" placeholder="0.5" min="0.1" max="1"
+                               step="0.1">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                        <input name="prob7" type="number" [(ngModel)]="prob[7]" class="form-control"
+                               [disabled]="mSControl.value < 8 || probSel != '2'" placeholder="0.5" min="0.1" max="1"
+                               step="0.1">
+                    </div>
+                </div>
+            </mat-card>
+            <br/>
+
+            <mat-card>
+                <mat-form-field class="input-one">
+                    <input matInput name="randSize" type="number"
+                           placeholder="Random Graph Size"
+                           [formControl]="rSControl" [errorStateMatcher]="matcher">
+                    <mat-hint>Please enter number >= 10</mat-hint>
+                    <mat-error *ngIf="rSControl.hasError('min') && !rSControl.hasError('required')">
+                        Please enter a valid number
+                    </mat-error>
+                    <mat-error *ngIf="rSControl.hasError('required')">
+                        The random graph size is <strong>required</strong>
+                    </mat-error>
+                </mat-form-field>
+            </mat-card>
+
+            <br/>
+
+            <mat-card>
+                <mat-radio-group class="otherSel" name="optionsel" [(ngModel)]="opSel">
+                    <mat-radio-button value="1">NemoCount</mat-radio-button>
+                    <mat-radio-button value="2">NemoProfile</mat-radio-button>
+                    <mat-radio-button value="3">NemoCollection</mat-radio-button>
+                </mat-radio-group>
+            </mat-card>
+
+            <br/>
+
+            <div class="row justify-content-center">
+                <button mat-raised-button color="primary" [disabled]="submitted" (click)="postData()">Submit</button>
+            </div>
+
+        </form>
+
+        <mat-card *ngIf="results" class="area">{{results}}</mat-card>
+        <br/>
+        <div *ngIf="currentFileUpload" class="progress">
+            <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar"
+                 aria-valuemin="0" aria-valuemax="100" [ngStyle]="{width:progress.percentage+'%'}">
+                {{progress.percentage}}%
+            </div>
+        </div>
+        <br/>
+        <mat-progress-bar mode="indeterminate" [hidden]="!submitted"></mat-progress-bar>
+        <br/>
+        <div class="row justify-content-center">
+            <!--            <button mat-raised-button color="primary" [disabled]="!resultsGet" (click)="showNemo()">NemoProfile-->
+            <!--            </button>-->
+            <button mat-raised-button color="primary" class="cleanBtn" (click)="cleanResults()">Clean Results</button>
+        </div>
+
+        <br/><br/>
+
+
+        <table mat-table [dataSource]="downloadFileData" *ngIf="downloadFileData.length > 0"
+               class="mat-elevation-z8">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Name</th>
+                <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="url">
+                <th mat-header-cell *matHeaderCellDef> Url</th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-button (click)="downloadFile(element.name, element.url)">
+                        Download
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <!--        <div class="mat-elevation-z8">-->
+        <!--            <mat-form-field class="filterTable">-->
+        <!--                <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">-->
+        <!--            </mat-form-field>-->
+
+        <!--            <table mat-table [dataSource]="dataSource">-->
+
+        <!--                &lt;!&ndash; Label Column &ndash;&gt;-->
+        <!--                <ng-container matColumnDef="label">-->
+        <!--                    <th mat-header-cell *matHeaderCellDef> Label</th>-->
+        <!--                    <td mat-cell *matCellDef="let element"> {{element.label}} </td>-->
+        <!--                </ng-container>-->
+
+        <!--                &lt;!&ndash; ID Column &ndash;&gt;-->
+        <!--                <ng-container matColumnDef="nodeid">-->
+        <!--                    <th mat-header-cell *matHeaderCellDef> Node ID</th>-->
+        <!--                    <td mat-cell *matCellDef="let element"> {{element.nodeID}} </td>-->
+        <!--                </ng-container>-->
+
+        <!--                &lt;!&ndash; Frequency Column &ndash;&gt;-->
+        <!--                <ng-container matColumnDef="frequency">-->
+        <!--                    <th mat-header-cell *matHeaderCellDef> Frequency</th>-->
+        <!--                    <td mat-cell *matCellDef="let element"> {{element.frequency}} </td>-->
+        <!--                </ng-container>-->
+
+        <!--                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>-->
+        <!--                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>-->
+        <!--            </table>-->
+        <!--            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>-->
+        <!--        </div>-->
+
+    </div>
+</div>
+
+

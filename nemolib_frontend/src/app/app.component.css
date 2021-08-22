@@ -1,0 +1,70 @@
+
+#mainTitle{
+  color:dodgerblue;
+}
+
+#subTitle {
+  color:cornflowerblue;
+}
+
+#chooseFileBn {
+  color:cornflowerblue;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+.jumbotron {
+  width: 50%;
+}
+
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.area{
+  margin-top: 16px;
+  width: 100%;
+  white-space: pre-wrap;
+
+}
+
+.input-one {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.cleanBtn {
+  margin-left: 0px;
+}
+
+table {
+  width: 100%;
+}
+
+.filterTable {
+  margin-top: 5px;
+  margin-left: 1%;
+  margin-right: 1%;
+  font-size: 14px;
+  width: 98%;
+}
+
+.dirSection {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.dirSel {
+  margin-left: 2px;
+  margin-right: 10px;
+}
+
+.otherSel {
+  margin-right: 10px;
+}
